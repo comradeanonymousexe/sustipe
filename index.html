@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPE Batch '31 — Optima · SUST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════ PRELOADER ═══════════════════════════ -->
+  <div id="preloader">
+    <div class="pre-bg"></div>
+    <div class="pre-content">
+      <div class="pre-logo">
+        <span class="pre-dept">Industrial &amp; Production Engineering</span>
+        <div class="pre-line"></div>
+      </div>
+      <div class="pre-counter">
+        <span id="pre-num">00</span>
+      </div>
+      <div class="pre-tagline">
+        <span>From Concept</span>
+        <span class="accent">To Production</span>
+      </div>
+      <div class="pre-progress">
+        <div class="pre-bar" id="pre-bar"></div>
+      </div>
+    </div>
+    <div class="pre-grid-overlay"></div>
+  </div>
+
+  <!-- ═══════════════════════════ CURSOR ═══════════════════════════ -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+  <nav id="main-nav">
+    <div class="nav-left">
+      <span class="nav-dept">IPE · SUST</span>
+    </div>
+    <div class="nav-center">
+      <a href="#manifesto" class="nav-link">Manifesto</a>
+      <a href="#banner" class="nav-link">Banner</a>
+      <a href="#roster" class="nav-link">Roster</a>
+      <a href="#coda" class="nav-link">Coda</a>
+    </div>
+    <div class="nav-right">
+      <span class="nav-batch">Batch '31</span>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════ SECTION 01 — HERO ═══════════════════════════ -->
+  <section id="hero" class="section">
+    <div class="hero-bg-gear" id="hero-gear-bg">
+      <canvas id="gear-canvas"></canvas>
+    </div>
+    <div class="hero-noise"></div>
+
+    <div class="hero-inner">
+      <div class="hero-eyebrow reveal-item">
+        <span class="eyebrow-line"></span>
+        <span>SHAHJALAL UNIVERSITY OF SCIENCE &amp; TECHNOLOGY</span>
+        <span class="eyebrow-line"></span>
+      </div>
+
+      <h1 class="hero-title">
+        <span class="hero-line reveal-item" data-delay="0">
+          <em class="italic-word">Optima</em>
+        </span>
+        <span class="hero-line hero-line--sub reveal-item" data-delay="1">
+          <span class="block-word">BATCH</span>
+          <span class="accent-num">'31</span>
+        </span>
+      </h1>
+
+      <p class="hero-sub reveal-item" data-delay="2">
+        Department of Industrial &amp; Production Engineering
+      </p>
+
+      <div class="hero-cta reveal-item" data-delay="3">
+        <a href="#manifesto" class="cta-btn">
+          <span>Enter</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <div class="cta-scroll-hint">
+          <span>Scroll</span>
+          <div class="scroll-indicator"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-counter">
+      <span>36</span>
+      <span class="counter-label">Engineers</span>
+    </div>
+
+    <div class="hero-corner-text">
+      From Concept<br/>To Production
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ SECTION 02 — MANIFESTO ═══════════════════════════ -->
+  <section id="manifesto" class="section section--manifesto">
+    <div class="manifesto-inner">
+      <div class="manifesto-label reveal-item">
+        <span>02 / Manifesto</span>
+      </div>
+
+      <div class="manifesto-text">
+        <p class="manifesto-p reveal-item" data-delay="0">
+          We are the <em>engineers of process</em>, the architects of efficiency. Where raw material meets refined purpose—there we stand.
+        </p>
+        <p class="manifesto-p reveal-item" data-delay="1">
+          IPE Batch '31 does not merely study production. We <em>become</em> it. Calibrated. Precise. Relentless.
+        </p>
+        <p class="manifesto-p reveal-item" data-delay="2">
+          A center for knowledge creation, technological innovation, and the transfer between academia, industry, and society.
+        </p>
+      </div>
+
+      <div class="manifesto-stats reveal-item" data-delay="3">
+        <div class="stat-item">
+          <span class="stat-num">36</span>
+          <span class="stat-label">Members</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">'31</span>
+          <span class="stat-label">Batch</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">2026</span>
+          <span class="stat-label">Established</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="manifesto-gear-small" id="mgear">
+      <svg viewBox="0 0 200 200" class="gear-svg-small rotating-gear">
+        <use href="#gear-symbol"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ SECTION 03 — BANNER SHOWCASE ═══════════════════════════ -->
+  <!-- <section id="banner" class="section section--banner">
+    <div class="banner-label reveal-item">
+      <span>03 / Banner</span>
+    </div>
+
+    <div class="banner-showcase">
+      <div class="banner-frame reveal-item" id="banner-frame">
+        <div class="banner-tilt-inner" id="tilt-target">
+          <img src="assets/banner.png" alt="IPE Batch 31 Official Banner" class="banner-img" />
+          <div class="banner-overlay"></div>
+          <div class="banner-corner-tl"></div>
+          <div class="banner-corner-tr"></div>
+          <div class="banner-corner-bl"></div>
+          <div class="banner-corner-br"></div>
+        </div>
+      </div>
+
+      <div class="banner-meta reveal-item" data-delay="1">
+        <div class="bm-row">
+          <span class="bm-key">Department</span>
+          <span class="bm-val">Industrial &amp; Production Engineering</span>
+        </div>
+        <div class="bm-row">
+          <span class="bm-key">University</span>
+          <span class="bm-val">Shahjalal University of Science &amp; Technology</span>
+        </div>
+        <div class="bm-row">
+          <span class="bm-key">Batch</span>
+          <span class="bm-val accent-text">'31 · 2026</span>
+        </div>
+        <div class="bm-row">
+          <span class="bm-key">Identity</span>
+          <span class="bm-val italic-text">Optima</span>
+        </div>
+        <div class="bm-row">
+          <span class="bm-key">Members</span>
+          <span class="bm-val">36 Engineers</span>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- ═══════════════════════════ SECTION 04 — ROSTER ═══════════════════════════ -->
+  <section id="roster" class="section section--roster">
+    <div class="roster-header">
+      <div class="roster-label reveal-item">
+        <span>04 / Roster</span>
+      </div>
+      <h2 class="roster-title reveal-item" data-delay="1">The<br/><em>Engineers</em></h2>
+    </div>
+
+    <div class="roster-grid" id="roster-grid">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="roster-blueprint-bg"></div>
+  </section>
+
+  <!-- ═══════════════════════════ SECTION 05 — CODA / FOOTER ═══════════════════════════ -->
+  <section id="coda" class="section section--coda">
+    <div class="coda-inner">
+      <div class="coda-gear-large" id="coda-gear">
+        <canvas id="coda-gear-canvas"></canvas>
+      </div>
+
+      <div class="coda-text reveal-item">
+        <p class="coda-small">Industrial &amp; Production Engineering · SUST</p>
+        <h2 class="coda-title">
+          <em>Optima</em>
+        </h2>
+        <p class="coda-batch">Batch <span class="accent">'31</span> · Est. 2026</p>
+        <p class="coda-quote">"From Concept to Production — with precision, with purpose."</p>
+      </div>
+
+      <div class="coda-footer reveal-item" data-delay="2">
+        <span>IPE · SUST · Batch '31 · 2026</span>
+        <span class="footer-sep">—</span>
+        <span>All Rights Reserved</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ SVG DEFS (hidden) ═══════════════════════════ -->
+  <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+    <defs>
+      <symbol id="gear-symbol" viewBox="0 0 200 200">
+        <g fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round">
+          <!-- Gear teeth (12 teeth) -->
+          <path d="M85 8 L88 0 L100 0 L112 0 L115 8 L108 15 L92 15 Z" />
+          <path d="M138 22 L144 16 L153 25 L158 34 L152 40 L143 35 L137 28 Z" />
+          <path d="M168 70 L176 68 L180 80 L180 92 L172 94 L166 86 L166 78 Z" />
+          <path d="M168 130 L176 132 L172 144 L164 152 L158 148 L160 139 L166 134 Z" />
+          <path d="M138 178 L143 184 L132 192 L120 196 L116 190 L122 183 L130 180 Z" />
+          <path d="M62 178 L57 184 L68 192 L80 196 L84 190 L78 183 L70 180 Z" />
+          <path d="M32 130 L24 132 L28 144 L36 152 L42 148 L40 139 L34 134 Z" />
+          <path d="M32 70 L24 68 L20 80 L20 92 L28 94 L34 86 L34 78 Z" />
+          <path d="M62 22 L56 16 L47 25 L42 34 L48 40 L57 35 L63 28 Z" />
+          <!-- Main circle body -->
+          <circle cx="100" cy="100" r="75" stroke-width="4"/>
+          <!-- Inner ring -->
+          <circle cx="100" cy="100" r="55" stroke-width="2" stroke-dasharray="4 6"/>
+          <!-- Center hub -->
+          <circle cx="100" cy="100" r="22" stroke-width="3"/>
+          <circle cx="100" cy="100" r="10" stroke-width="2"/>
+          <!-- Spokes -->
+          <line x1="100" y1="45" x2="100" y2="78" stroke-width="2"/>
+          <line x1="100" y1="122" x2="100" y2="155" stroke-width="2"/>
+          <line x1="45" y1="100" x2="78" y2="100" stroke-width="2"/>
+          <line x1="122" y1="100" x2="155" y2="100" stroke-width="2"/>
+          <line x1="58" y1="58" x2="80" y2="80" stroke-width="2"/>
+          <line x1="120" y1="120" x2="142" y2="142" stroke-width="2"/>
+          <line x1="142" y1="58" x2="120" y2="80" stroke-width="2"/>
+          <line x1="80" y1="120" x2="58" y2="142" stroke-width="2"/>
+          <!-- Blueprint cross marks -->
+          <path d="M96 100 L104 100 M100 96 L100 104" stroke-width="1.5" opacity="0.6"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
