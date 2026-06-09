@@ -1,21 +1,60 @@
 /* ═══════════════════════════════════════════════
    IPE BATCH '31 — OPTIMA · script.js
-   Preloader · Gear · Cursor · Parallax · Tilt · Roster
+   Preloader · Gear · Cursor · Parallax · Tilt · Roster · Catch
 ═══════════════════════════════════════════════ */
 
 'use strict';
 
-/* ─── NAMES ─── */
-const NAMES = [
-  'JUBAIR','MUSFIQUE','MUNTAHSIN','FAHMI','ADNAN',
-  'SHIFAT','WASIMA','HASMIR','SHAKHAET','TASNUR',
-  'ZINAN','AVIJITH','JAHIN','SABIK','NABILA',
-  'ANIRBAN','ALIZA','RODELA','NISHITA','MAHIN',
-  'JISAN','TAZIF','SHARIF','RAFI','AYON',
-  'TAHSIN','NUSAIBA','ADIBA','OISHIK','ROKTIM',
-  'TAJIM','DHRUBO','AHANAF','MOHAMMAD','MOFAZZOL',
-  'SUCHETA', 'MORSHED'
-];
+/* ─── MEMBERS (roll → name) ─── */
+const MEMBERS = {
+   3: 'TAHSIN',
+   4: 'MUNTAHSIN',
+   5: 'MORSHED',
+   6: 'ANGSHU',
+  10: 'AYON',
+  12: 'ROKTIM',
+  13: 'JISAN',
+  15: 'FAHMI',
+  17: 'OISHIK',
+  23: 'SHAHRIYAR',
+  30: 'ANIRBAN',
+  32: 'DHRUBO',
+  38: 'TAKI',
+  39: 'ZINAN',
+  40: 'RODELA',
+  41: 'MAHDI',
+  42: 'SAGOR',
+  44: 'WASIMA',
+  47: 'SABIK',
+  49: 'SOUBIR',
+  51: 'MOHAMMAD',
+  52: 'RAFI',
+  54: 'NISHITA',
+  56: 'JUBAIR',
+  58: 'TAS',
+  59: 'SHAKHAET',
+  60: 'MOFI',
+  61: 'HASMIR',
+  63: 'MUSFIQUE',
+  64: 'JABIR',
+  66: 'AHANAF',
+  67: 'SHIFAT',
+  68: 'ALIF',
+  71: 'SUCHETA',
+  72: 'AVIJITH',
+  74: 'ADNAN',
+  75: 'NUSAIBA',
+  77: 'ALIZA',
+  78: 'TAZIF',
+  79: 'ADIBA',
+  80: 'NABILA',
+  84: 'RICHARD',
+};
+
+/* Sorted entries for iteration (by roll ascending) */
+const MEMBERS_LIST = Object.entries(MEMBERS)
+  .map(([roll, name]) => ({ roll: Number(roll), name }))
+  .sort((a, b) => a.roll - b.roll);
 
 /* ─── UTILS ─── */
 const qs  = (sel, ctx = document) => ctx.querySelector(sel);
@@ -372,13 +411,15 @@ function buildRoster() {
   const grid = qs('#roster-grid');
   if (!grid) return;
 
-  NAMES.forEach((name, i) => {
+  MEMBERS_LIST.forEach(({ roll, name }) => {
     const card = document.createElement('div');
     card.className = 'name-card';
+    card.dataset.roll = roll;
+    card.dataset.name = name;
 
     const idx  = document.createElement('span');
     idx.className = 'name-index';
-    idx.textContent = (i + 1).toString().padStart(2, '0');
+    idx.textContent = roll.toString().padStart(2, '0');
 
     const txt  = document.createElement('span');
     txt.className = 'name-text';
@@ -392,7 +433,6 @@ function buildRoster() {
     card.appendChild(glow);
     grid.appendChild(card);
 
-    // Neon ripple on click
     card.addEventListener('click', () => {
       card.style.setProperty('--glow-size', '3');
       setTimeout(() => card.style.removeProperty('--glow-size'), 600);
@@ -445,6 +485,231 @@ function initCodaGear() {
 }
 
 /* ═══════════════════════════════════════════════
+   12 · UTILS — CATCH
+   Random name roller with purpose + count + group
+═══════════════════════════════════════════════ */
+function initCatch() {
+  const overlay   = qs('#catch-overlay');
+  const openBtns  = qsa('.catch-open-btn');
+  const closeBtn  = qs('#catch-close');
+  const rollBtn   = qs('#catch-roll-btn');
+  const resetBtn  = qs('#catch-reset-btn');
+  const checkList = qs('#catch-checklist');
+  const selAll    = qs('#catch-sel-all');
+  const selNone   = qs('#catch-sel-none');
+  const countInput= qs('#catch-count');
+  const purposeInput = qs('#catch-purpose');
+  const resultArea = qs('#catch-result');
+  const drumEl    = qs('#catch-drum');
+
+  if (!overlay) return;
+
+  /* ── Build checklist ── */
+  MEMBERS_LIST.forEach(({ roll, name }) => {
+    const label = document.createElement('label');
+    label.className = 'catch-check-label';
+
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = roll;
+    cb.checked = true;
+    cb.className = 'catch-checkbox';
+    cb.dataset.name = name;
+
+    const span = document.createElement('span');
+    span.className = 'catch-check-text';
+
+    const rollSpan = document.createElement('span');
+    rollSpan.className = 'catch-check-roll';
+    rollSpan.textContent = roll.toString().padStart(2, '0');
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'catch-check-name';
+    nameSpan.textContent = name;
+
+    span.appendChild(rollSpan);
+    span.appendChild(nameSpan);
+    label.appendChild(cb);
+    label.appendChild(span);
+    checkList.appendChild(label);
+  });
+
+  /* ── Open / close ── */
+  openBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      resetCatch();
+    });
+  });
+
+  function closeOverlay() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  closeBtn.addEventListener('click', closeOverlay);
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeOverlay();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeOverlay();
+  });
+
+  /* ── Select all / none ── */
+  selAll.addEventListener('click', () => {
+    checkList.querySelectorAll('.catch-checkbox').forEach(cb => cb.checked = true);
+    updateSelectedCount();
+  });
+  selNone.addEventListener('click', () => {
+    checkList.querySelectorAll('.catch-checkbox').forEach(cb => cb.checked = false);
+    updateSelectedCount();
+  });
+  checkList.addEventListener('change', updateSelectedCount);
+
+  function updateSelectedCount() {
+    const n = checkList.querySelectorAll('.catch-checkbox:checked').length;
+    qs('#catch-sel-count').textContent = n + ' selected';
+  }
+  updateSelectedCount();
+
+  /* ── Reset UI ── */
+  function resetCatch() {
+    resultArea.classList.remove('show');
+    resultArea.innerHTML = '';
+    drumEl.textContent   = '';
+    drumEl.classList.remove('show');
+    rollBtn.disabled = false;
+    rollBtn.textContent = 'Roll';
+    resetBtn.style.display = 'none';
+  }
+
+  resetBtn.addEventListener('click', resetCatch);
+
+  /* ── Drum roll animation ── */
+  function drumRoll(pool, finalPicks, duration, onDone) {
+    const allNames   = pool.map(p => p.name);
+    const frameMs    = 60;
+    const frames     = Math.floor(duration / frameMs);
+    let   frame      = 0;
+    drumEl.classList.add('show');
+
+    const iv = setInterval(() => {
+      frame++;
+      // Pick random display names during roll
+      const showing = [];
+      for (let i = 0; i < finalPicks.length; i++) {
+        showing.push(allNames[Math.floor(Math.random() * allNames.length)]);
+      }
+      drumEl.textContent = showing.join('   ·   ');
+
+      if (frame >= frames) {
+        clearInterval(iv);
+        drumEl.textContent = finalPicks.map(p => p.name).join('   ·   ');
+        onDone();
+      }
+    }, frameMs);
+  }
+
+  /* ── Count +/- buttons ── */
+  qs('#count-inc').addEventListener('click', () => {
+    const max = checkList.querySelectorAll('.catch-checkbox:checked').length;
+    const cur = parseInt(countInput.value) || 1;
+    if (cur < max) countInput.value = cur + 1;
+  });
+  qs('#count-dec').addEventListener('click', () => {
+    const cur = parseInt(countInput.value) || 1;
+    if (cur > 1) countInput.value = cur - 1;
+  });
+
+  /* ── Roll logic ── */
+  rollBtn.addEventListener('click', () => {
+    const checked = [...checkList.querySelectorAll('.catch-checkbox:checked')];
+    if (!checked.length) {
+      shakeEl(rollBtn);
+      return;
+    }
+
+    const count = Math.max(1, Math.min(parseInt(countInput.value) || 1, checked.length));
+    const pool  = checked.map(cb => ({
+      roll: Number(cb.value),
+      name: cb.dataset.name
+    }));
+
+    const purpose = purposeInput.value.trim();
+
+    // Fisher-Yates shuffle → take first `count`
+    const shuffled = [...pool];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const picks = shuffled.slice(0, count);
+
+    rollBtn.disabled = true;
+    resultArea.classList.remove('show');
+    resultArea.innerHTML = '';
+
+    drumRoll(pool, picks, 2200, () => {
+      setTimeout(() => {
+        drumEl.classList.remove('show');
+        renderResult(picks, purpose);
+      }, 300);
+    });
+  });
+
+  /* ── Render final result ── */
+  function renderResult(picks, purpose) {
+    resultArea.innerHTML = '';
+
+    /* Cards for each caught person */
+    const cardsWrap = document.createElement('div');
+    cardsWrap.className = 'catch-result-cards';
+
+    picks.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'catch-result-card';
+      card.style.animationDelay = (i * 120) + 'ms';
+
+      const rollBadge = document.createElement('span');
+      rollBadge.className = 'catch-res-roll';
+      rollBadge.textContent = p.roll.toString().padStart(2, '0');
+
+      const nameTxt = document.createElement('span');
+      nameTxt.className = 'catch-res-name';
+      nameTxt.textContent = p.name;
+
+      card.appendChild(rollBadge);
+      card.appendChild(nameTxt);
+      cardsWrap.appendChild(card);
+    });
+
+    /* Verdict line */
+    const verdict = document.createElement('p');
+    verdict.className = 'catch-verdict';
+    const nameList = picks.map(p => p.name).join(', ');
+    const haveText = picks.length === 1 ? 'has' : 'have';
+    verdict.innerHTML = purpose
+      ? `<em>${nameList}</em> ${haveText} been caught for <span class="catch-purpose-highlight">${purpose}</span>.`
+      : `<em>${nameList}</em> ${haveText} been caught.`;
+
+    resultArea.appendChild(cardsWrap);
+    resultArea.appendChild(verdict);
+    resultArea.classList.add('show');
+
+    resetBtn.style.display = 'inline-flex';
+    rollBtn.disabled = false;
+    rollBtn.textContent = 'Roll Again';
+  }
+
+  /* ── Shake utility ── */
+  function shakeEl(el) {
+    el.classList.add('shake');
+    setTimeout(() => el.classList.remove('shake'), 400);
+  }
+}
+
+/* ═══════════════════════════════════════════════
    BOOT
 ═══════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
@@ -454,5 +719,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initBannerTilt();
   initHeroGear();
   initCodaGear();
+  initCatch();
   initPreloader(); // runs last — controls timing
 });
