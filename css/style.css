@@ -15,7 +15,7 @@
 
   --text:      #e8eaf0;
   --text-2:    #e3edff;
-  --text-3:    #4a5568;
+  --text-3:    #c1cfe6;
 
   --accent:    #7c5ff0;
   --accent-2:  #a78bfa;
@@ -1839,7 +1839,7 @@ body {
   .hero-inner { padding: 0 1.5rem; }
 
   .hero-eyebrow {
-    font-size: 0.5rem;
+    font-size: 0.7rem;
     letter-spacing: 0.12em;
     gap: 0.5rem;
     margin-bottom: 1.5rem;
