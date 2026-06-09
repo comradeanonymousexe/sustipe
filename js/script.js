@@ -56,6 +56,10 @@ const MEMBERS_LIST = Object.entries(MEMBERS)
   .map(([roll, name]) => ({ roll: Number(roll), name }))
   .sort((a, b) => a.roll - b.roll);
 
+/* ─── DEVICE ─── */
+const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+const isTouch  = () => navigator.maxTouchPoints > 0;
+
 /* ─── UTILS ─── */
 const qs  = (sel, ctx = document) => ctx.querySelector(sel);
 const qsa = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
@@ -254,9 +258,11 @@ function initGearCanvas(canvasId, opts = {}) {
 }
 
 /* ═══════════════════════════════════════════════
-   03 · CURSOR
+   03 · CURSOR (desktop only)
 ═══════════════════════════════════════════════ */
 function initCursor() {
+  if (isMobile() || isTouch()) return; // ← skip on mobile
+
   const dot  = qs('#cursor-dot');
   const ring = qs('#cursor-ring');
   if (!dot || !ring) return;
@@ -352,9 +358,11 @@ function setupScrollReveal() {
 }
 
 /* ═══════════════════════════════════════════════
-   07 · PARALLAX
+   07 · PARALLAX (desktop only)
 ═══════════════════════════════════════════════ */
 function setupParallax() {
+  if (isMobile()) return; // ← skip on mobile
+
   const heroGear = qs('#hero-gear-bg');
   const mGear    = qs('#mgear');
   let ticking    = false;
@@ -379,9 +387,11 @@ function setupParallax() {
 }
 
 /* ═══════════════════════════════════════════════
-   08 · BANNER TILT
+   08 · BANNER TILT (desktop only)
 ═══════════════════════════════════════════════ */
 function initBannerTilt() {
+  if (isMobile() || isTouch()) return; // ← skip on mobile
+
   const frame = qs('#banner-frame');
   const inner = qs('#tilt-target');
   if (!frame || !inner) return;
@@ -441,13 +451,14 @@ function buildRoster() {
 }
 
 /* ═══════════════════════════════════════════════
-   10 · HERO GEAR (mouse-reactive)
+   10 · HERO GEAR (mouse-reactive, desktop only)
 ═══════════════════════════════════════════════ */
 function initHeroGear() {
   if (typeof THREE === 'undefined') return;
+
   const g = initGearCanvas('gear-canvas', {
     gear: {
-      toothCount: 24,
+      toothCount: isMobile() ? 18 : 24, // fewer segments on mobile
       outerR: 1.9,
       innerR: 1.3,
       toothH: 0.3,
@@ -456,6 +467,8 @@ function initHeroGear() {
     }
   });
   if (!g) return;
+
+  if (isMobile() || isTouch()) return; // no mouse tracking on touch
 
   const section = qs('#hero');
   section.addEventListener('mousemove', e => {
@@ -710,6 +723,57 @@ function initCatch() {
 }
 
 /* ═══════════════════════════════════════════════
+   13 · MOBILE NAV DRAWER
+═══════════════════════════════════════════════ */
+function initMobileNav() {
+  const hamburger = qs('#nav-hamburger');
+  const drawer    = qs('#nav-drawer');
+  const backdrop  = qs('#nav-backdrop');
+  const closeBtn  = qs('#nav-close');
+  if (!hamburger || !drawer) return;
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    backdrop.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    // Animate hamburger → X
+    const spans = hamburger.querySelectorAll('span');
+    spans[0].style.transform = 'translateY(6px) rotate(45deg)';
+    spans[1].style.opacity   = '0';
+    spans[2].style.transform = 'translateY(-6px) rotate(-45deg)';
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    backdrop.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    // Restore hamburger bars
+    const spans = hamburger.querySelectorAll('span');
+    spans[0].style.transform = '';
+    spans[1].style.opacity   = '';
+    spans[2].style.transform = '';
+  }
+
+  hamburger.addEventListener('click', openDrawer);
+  closeBtn.addEventListener('click', closeDrawer);
+  backdrop.addEventListener('click', closeDrawer);
+
+  // Close on any drawer link click
+  drawer.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', closeDrawer);
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();
+  });
+}
+
+/* ═══════════════════════════════════════════════
    BOOT
 ═══════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
@@ -720,5 +784,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeroGear();
   initCodaGear();
   initCatch();
+  initMobileNav();
   initPreloader(); // runs last — controls timing
 });

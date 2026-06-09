@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>IPE Batch '31 — Optima · SUST</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<!-- ADD this line right before the fonts <link> -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+<!-- Change the fonts link itself from rel="stylesheet" to: -->
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" as="style" onload="this.rel='stylesheet'" />
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" /></noscript>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -52,7 +56,29 @@
     <div class="nav-right">
       <span class="nav-batch">Batch '31</span>
     </div>
+    <!-- Mobile hamburger (hidden on desktop via CSS) -->
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </nav>
+
+  <!-- Mobile drawer + backdrop (hidden on desktop) -->
+  <div class="nav-backdrop" id="nav-backdrop"></div>
+  <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+    <button class="nav-close-btn" id="nav-close" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+    <a href="#manifesto" class="nav-link">Manifesto</a>
+    <a href="#banner"    class="nav-link">Banner</a>
+    <a href="#roster"    class="nav-link">Roster</a>
+    <a href="#utils"     class="nav-link">Utils</a>
+    <a href="#coda"      class="nav-link">Coda</a>
+    <span class="nav-drawer-batch">Batch '31 · 2026</span>
+  </div>
 
   <!-- ═══════════════════════════ SECTION 01 — HERO ═══════════════════════════ -->
   <section id="hero" class="section">
@@ -150,48 +176,7 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════ SECTION 03 — BANNER SHOWCASE ═══════════════════════════ -->
-  <!-- <section id="banner" class="section section--banner">
-    <div class="banner-label reveal-item">
-      <span>03 / Banner</span>
-    </div>
 
-    <div class="banner-showcase">
-      <div class="banner-frame reveal-item" id="banner-frame">
-        <div class="banner-tilt-inner" id="tilt-target">
-          <img src="assets/banner.png" alt="IPE Batch 31 Official Banner" class="banner-img" />
-          <div class="banner-overlay"></div>
-          <div class="banner-corner-tl"></div>
-          <div class="banner-corner-tr"></div>
-          <div class="banner-corner-bl"></div>
-          <div class="banner-corner-br"></div>
-        </div>
-      </div>
-
-      <div class="banner-meta reveal-item" data-delay="1">
-        <div class="bm-row">
-          <span class="bm-key">Department</span>
-          <span class="bm-val">Industrial &amp; Production Engineering</span>
-        </div>
-        <div class="bm-row">
-          <span class="bm-key">University</span>
-          <span class="bm-val">Shahjalal University of Science &amp; Technology</span>
-        </div>
-        <div class="bm-row">
-          <span class="bm-key">Batch</span>
-          <span class="bm-val accent-text">'31 · 2026</span>
-        </div>
-        <div class="bm-row">
-          <span class="bm-key">Identity</span>
-          <span class="bm-val italic-text">Optima</span>
-        </div>
-        <div class="bm-row">
-          <span class="bm-key">Members</span>
-          <span class="bm-val">42 Engineers</span>
-        </div>
-      </div>
-    </div>
-  </section> -->
 
   <!-- ═══════════════════════════ SECTION 04 — ROSTER ═══════════════════════════ -->
   <section id="roster" class="section section--roster">
@@ -218,7 +203,7 @@
 
       <div class="utils-header">
         <h2 class="utils-title reveal-item" data-delay="1">
-          Useful<br/><em>Tools</em>
+          Tools &amp;<br/><em>Functions</em>
         </h2>
         <p class="utils-sub reveal-item" data-delay="2">
           Utilities built for the batch. More to come.
@@ -291,14 +276,12 @@
         <h2 class="coda-title">
           <em>Optima</em>
         </h2>
-        <p class="coda-batch">Batch <span class="accent">'31</span> · Est. 2026</p>
+        <p class="coda-batch">Batch <span class="accent">'31</span> · 2026</p>
         <p class="coda-quote">"From Concept to Production — with precision, with purpose."</p>
       </div>
 
       <div class="coda-footer reveal-item" data-delay="2">
         <span>IPE · SUST · Batch '31 · 2026</span>
-        <span class="footer-sep">—</span>
-        <span>All Rights Reserved</span>
       </div>
     </div>
   </section>
@@ -425,7 +408,7 @@
     </defs>
   </svg>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="js/script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="js/script.js" defer></script>
 </body>
 </html>

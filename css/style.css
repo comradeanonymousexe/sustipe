@@ -14,15 +14,15 @@
   --surface-2: #1a2235;
 
   --text:      #e8eaf0;
-  --text-2:    #c8c8c9;
-  --text-3:    #c6d8f7;
+  --text-2:    #e3edff;
+  --text-3:    #4a5568;
 
-  --accent:    #69618b;
+  --accent:    #7c5ff0;
   --accent-2:  #a78bfa;
-  --accent-dim:#5d48b1;
-  --steel:     #ffffff;
-  --gold:      #d4aa70;
-  --neon:      #5cecff;
+  --accent-dim:#3d2f78;
+  --steel:     #c1daff;
+  --gold:      #ffbd61;
+  --neon:      #48eaff;
 
   --border:    rgba(120,140,200,0.12);
   --border-2:  rgba(120,140,200,0.06);
@@ -339,7 +339,7 @@ body {
   justify-content: center;
   gap: 1rem;
   font-family: var(--font-mono);
-  font-size: clamp(0.60rem, 1.2vw, 0.9rem);
+  font-size: clamp(0.55rem, 1vw, 0.7rem);
   letter-spacing: 0.25em;
   color: var(--text-3);
   text-transform: uppercase;
@@ -1675,3 +1675,305 @@ body {
 }
 
 .shake { animation: shake 0.4s var(--ease-out); }
+
+
+/* ═══════════════════════════════════════════════
+   MOBILE — HAMBURGER NAV
+   (no JS nav menu needed — links collapse into
+    a drawer triggered by a checkbox hack)
+═══════════════════════════════════════════════ */
+
+/* Hide toggle by default on desktop */
+.nav-hamburger,
+.nav-drawer-toggle,
+.nav-backdrop { display: none; }
+
+@media (max-width: 768px) {
+
+  /* ── Base fixes ── */
+  body { cursor: auto !important; }
+
+  #cursor-dot,
+  #cursor-ring { display: none !important; }
+
+  /* ── NAV: replace 3-column layout with logo + hamburger ── */
+  #main-nav {
+    padding: 1rem 1.2rem;
+    gap: 0;
+  }
+
+  .nav-center { display: none; }
+  .nav-right   { display: none; }
+
+  .nav-left {
+    flex: 1;
+  }
+
+  .nav-dept {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+  }
+
+  /* Hamburger button */
+  .nav-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    padding: 8px;
+    flex-shrink: 0;
+  }
+
+  .nav-hamburger span {
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: var(--text-2);
+    transition: transform 0.3s var(--ease-out), opacity 0.3s;
+    transform-origin: center;
+  }
+
+  /* Drawer (off-canvas panel) */
+  .nav-drawer {
+    display: flex !important;
+    position: fixed;
+    top: 0; right: 0;
+    width: min(280px, 80vw);
+    height: 100dvh;
+    background: var(--bg-2);
+    border-left: 1px solid var(--border);
+    flex-direction: column;
+    padding: 5rem 2rem 2rem;
+    gap: 0;
+    z-index: 600;
+    transform: translateX(100%);
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .nav-drawer.open { transform: translateX(0); }
+
+  .nav-drawer .nav-link {
+    display: block;
+    padding: 1rem 0;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--text-2);
+    border-bottom: 1px solid var(--border-2);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+  }
+
+  .nav-drawer .nav-link:last-child { border-bottom: none; }
+  .nav-drawer .nav-link:hover { color: var(--text); }
+
+  .nav-drawer-batch {
+    margin-top: auto;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--text-3);
+    text-transform: uppercase;
+  }
+
+  .nav-close-btn {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-close-btn svg { width: 14px; height: 14px; }
+
+  /* Backdrop */
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(4,5,15,0.7);
+    z-index: 590;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .nav-backdrop.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* ── HERO ── */
+  #hero { min-height: 100dvh; padding-top: 5rem; }
+
+  .hero-inner { padding: 0 1.5rem; }
+
+  .hero-eyebrow {
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .eyebrow-line { max-width: 30px; }
+
+  .italic-word {
+    font-size: clamp(4rem, 22vw, 6.5rem);
+  }
+
+  .block-word { font-size: clamp(1.4rem, 7vw, 2.2rem); letter-spacing: 0.3em; }
+  .accent-num { font-size: clamp(2.2rem, 12vw, 4rem); }
+
+  .hero-sub {
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 2rem;
+  }
+
+  .hero-cta { flex-direction: column; gap: 1.2rem; }
+
+  .cta-scroll-hint { display: none; }
+
+  .hero-counter {
+    bottom: 1.5rem;
+    left: 1.5rem;
+  }
+  .hero-counter span:first-child { font-size: 2.5rem; }
+
+  .hero-corner-text {
+    display: none; /* too crowded on small screens */
+  }
+
+  /* Gear canvas — shrink but keep visible */
+  #gear-canvas {
+    width: 320px;
+    height: 320px;
+    opacity: 0.1;
+  }
+
+  /* ── MANIFESTO ── */
+  #manifesto { padding: 5rem 0; }
+
+  .manifesto-inner { padding: 0 1.5rem; }
+
+  .manifesto-p { font-size: clamp(1.1rem, 4.5vw, 1.5rem); }
+
+  .manifesto-stats { gap: 1.2rem; flex-wrap: wrap; }
+
+  .manifesto-gear-small { display: none; }
+
+  /* ── BANNER ── */
+  #banner { padding: 5rem 0; }
+
+  .banner-label { padding: 0 1.5rem; margin-bottom: 2rem; }
+
+  .banner-showcase {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 0 1.5rem;
+  }
+
+  /* ── ROSTER ── */
+  #roster { padding: 5rem 0 4rem; }
+
+  .roster-header { padding: 0 1.5rem; margin-bottom: 3rem; }
+
+  .roster-title { font-size: clamp(2.5rem, 10vw, 4rem); }
+
+  .roster-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .name-card { padding: 1.2rem 1rem; }
+
+  .name-text { font-size: 0.8rem; }
+
+  /* ── UTILS ── */
+  #utils { padding: 5rem 0 4rem; }
+
+  .utils-inner { padding: 0 1.5rem; }
+
+  .utils-title { font-size: clamp(2.2rem, 9vw, 3.5rem); }
+
+  .utils-grid { grid-template-columns: 1fr; }
+
+  /* ── CODA ── */
+  #coda { padding: 5rem 2rem; }
+
+  .coda-gear-large {
+    width: 400px;
+    height: 400px;
+  }
+
+  .coda-title { font-size: clamp(4rem, 18vw, 8rem); }
+
+  .coda-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .footer-sep { display: none; }
+
+  /* ── CATCH OVERLAY ── */
+  .catch-panel {
+    max-height: 95dvh;
+    width: 100%;
+  }
+
+  .catch-body {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .catch-controls {
+    border-right: none;
+    border-bottom: 1px solid var(--border-2);
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .catch-field--group { min-height: 0; }
+
+  .catch-checklist { max-height: 200px; }
+
+  .catch-output { padding: 1.5rem; }
+
+  .catch-drum {
+    font-size: clamp(1.4rem, 6vw, 2rem);
+  }
+
+  /* ── Disable heavy parallax on mobile (handled in JS too) ── */
+  .hero-bg-gear,
+  #mgear {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* ── Preloader tighter on mobile ── */
+  .pre-logo { margin-bottom: 2rem; }
+  .pre-content { width: 90vw; }
+}
+
+/* Slightly wider breakpoint just for nav overflow prevention */
+@media (max-width: 900px) and (min-width: 769px) {
+  #main-nav { padding: 1.2rem 1.5rem; }
+  .nav-center { gap: 1.2rem; }
+  .nav-link { font-size: 0.6rem; letter-spacing: 0.12em; }
+  .nav-dept, .nav-batch { font-size: 0.6rem; letter-spacing: 0.12em; }
+}
