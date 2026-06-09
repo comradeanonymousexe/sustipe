@@ -4,14 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>IPE Batch '31 — Optima · SUST</title>
-<!-- ADD this line right before the fonts <link> -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-<!-- Change the fonts link itself from rel="stylesheet" to: -->
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" as="style" onload="this.rel='stylesheet'" />
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" /></noscript>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" as="style" onload="this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" /></noscript>
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -48,7 +47,6 @@
     </div>
     <div class="nav-center">
       <a href="#manifesto" class="nav-link">Manifesto</a>
-      <!-- <a href="#banner" class="nav-link">Banner</a> -->
       <a href="#roster" class="nav-link">Roster</a>
       <a href="#utils" class="nav-link">Utils</a>
       <a href="#coda" class="nav-link">Coda</a>
@@ -56,15 +54,11 @@
     <div class="nav-right">
       <span class="nav-batch">Batch '31</span>
     </div>
-    <!-- Mobile hamburger (hidden on desktop via CSS) -->
     <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </button>
   </nav>
 
-  <!-- Mobile drawer + backdrop (hidden on desktop) -->
   <div class="nav-backdrop" id="nav-backdrop"></div>
   <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
     <button class="nav-close-btn" id="nav-close" aria-label="Close menu">
@@ -82,9 +76,16 @@
 
   <!-- ═══════════════════════════ SECTION 01 — HERO ═══════════════════════════ -->
   <section id="hero" class="section">
+
+    <!-- Desktop: Three.js canvas gear (loaded conditionally via JS) -->
     <div class="hero-bg-gear" id="hero-gear-bg">
-      <canvas id="gear-canvas"></canvas>
+      <canvas id="gear-canvas" class="desktop-gear-canvas"></canvas>
+      <!-- Mobile: lightweight CSS SVG gear -->
+      <svg class="mobile-gear-svg" viewBox="0 0 200 200" aria-hidden="true">
+        <use href="#gear-symbol"/>
+      </svg>
     </div>
+
     <div class="hero-noise"></div>
 
     <div class="hero-inner">
@@ -127,17 +128,13 @@
       <span class="counter-label">Engineers</span>
     </div>
 
-    <div class="hero-corner-text">
-      From Concept<br/>To Production
-    </div>
+    <div class="hero-corner-text">From Concept<br/>To Production</div>
   </section>
 
   <!-- ═══════════════════════════ SECTION 02 — MANIFESTO ═══════════════════════════ -->
   <section id="manifesto" class="section section--manifesto">
     <div class="manifesto-inner">
-      <div class="manifesto-label reveal-item">
-        <span>02 / Manifesto</span>
-      </div>
+      <div class="manifesto-label reveal-item"><span>02 / Manifesto</span></div>
 
       <div class="manifesto-text">
         <p class="manifesto-p reveal-item" data-delay="0">
@@ -170,44 +167,30 @@
     </div>
 
     <div class="manifesto-gear-small" id="mgear">
-      <svg viewBox="0 0 200 200" class="gear-svg-small rotating-gear">
+      <svg viewBox="0 0 200 200" class="gear-svg-small rotating-gear" aria-hidden="true">
         <use href="#gear-symbol"/>
       </svg>
     </div>
   </section>
 
-
-
   <!-- ═══════════════════════════ SECTION 04 — ROSTER ═══════════════════════════ -->
   <section id="roster" class="section section--roster">
     <div class="roster-header">
-      <div class="roster-label reveal-item">
-        <span>04 / Roster</span>
-      </div>
+      <div class="roster-label reveal-item"><span>04 / Roster</span></div>
       <h2 class="roster-title reveal-item" data-delay="1">The<br/><em>Engineers</em></h2>
     </div>
-
-    <div class="roster-grid" id="roster-grid">
-      <!-- Populated by JS -->
-    </div>
-
+    <div class="roster-grid" id="roster-grid"></div>
     <div class="roster-blueprint-bg"></div>
   </section>
 
   <!-- ═══════════════════════════ SECTION 05 — UTILS ═══════════════════════════ -->
   <section id="utils" class="section section--utils">
     <div class="utils-inner">
-      <div class="utils-label reveal-item">
-        <span>05 / Utils</span>
-      </div>
+      <div class="utils-label reveal-item"><span>05 / Utils</span></div>
 
       <div class="utils-header">
-        <h2 class="utils-title reveal-item" data-delay="1">
-          Tools &amp;<br/><em>Functions</em>
-        </h2>
-        <p class="utils-sub reveal-item" data-delay="2">
-          Utilities built for the batch. More to come.
-        </p>
+        <h2 class="utils-title reveal-item" data-delay="1">Tools &amp;<br/><em>Functions</em></h2>
+        <p class="utils-sub reveal-item" data-delay="2">Utilities built for the batch. More to come.</p>
       </div>
 
       <div class="utils-grid reveal-item" data-delay="3">
@@ -218,12 +201,10 @@
             <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="20" cy="20" r="14"/>
               <circle cx="20" cy="20" r="5"/>
-              <!-- cross-hairs -->
               <line x1="20" y1="6" x2="20" y2="11"/>
               <line x1="20" y1="29" x2="20" y2="34"/>
               <line x1="6"  y1="20" x2="11" y2="20"/>
               <line x1="29" y1="20" x2="34" y2="20"/>
-              <!-- tick marks -->
               <line x1="27" y1="8.5"  x2="25" y2="11.8"/>
               <line x1="8.5" y1="27"  x2="11.8" y2="25"/>
               <line x1="31.5" y1="13" x2="28.2" y2="15"/>
@@ -242,7 +223,7 @@
           <div class="util-card-hover-bg"></div>
         </div>
 
-        <!-- PLACEHOLDER SLOT -->
+        <!-- PLACEHOLDER -->
         <div class="util-card util-card--coming">
           <div class="util-card-icon util-card-icon--dim">
             <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -260,22 +241,23 @@
 
       </div>
     </div>
-
     <div class="utils-bg-grid"></div>
   </section>
 
-  <!-- ═══════════════════════════ SECTION 06 — CODA / FOOTER ═══════════════════════════ -->
+  <!-- ═══════════════════════════ SECTION 06 — CODA ═══════════════════════════ -->
   <section id="coda" class="section section--coda">
     <div class="coda-inner">
       <div class="coda-gear-large" id="coda-gear">
-        <canvas id="coda-gear-canvas"></canvas>
+        <!-- Desktop: Three.js canvas. Mobile: CSS SVG. -->
+        <canvas id="coda-gear-canvas" class="desktop-gear-canvas"></canvas>
+        <svg class="mobile-coda-gear-svg rotating-gear" viewBox="0 0 200 200" aria-hidden="true">
+          <use href="#gear-symbol"/>
+        </svg>
       </div>
 
       <div class="coda-text reveal-item">
         <p class="coda-small">Industrial &amp; Production Engineering · SUST</p>
-        <h2 class="coda-title">
-          <em>Optima</em>
-        </h2>
+        <h2 class="coda-title"><em>Optima</em></h2>
         <p class="coda-batch">Batch <span class="accent">'31</span> · 2026</p>
         <p class="coda-quote">"From Concept to Production — with precision, with purpose."</p>
       </div>
@@ -287,9 +269,18 @@
   </section>
 
   <!-- ═══════════════════════════ CATCH OVERLAY ═══════════════════════════ -->
+  <!--
+    Desktop: full-screen overlay with side-by-side panel (controls | output)
+    Mobile:  bottom sheet with two tabs (Roll | Group)
+             Roll tab shows drum + result + the big ROLL button
+             Group tab shows checklist + count + purpose
+  -->
   <div id="catch-overlay" role="dialog" aria-modal="true" aria-label="Catch — random name selector">
 
     <div class="catch-panel">
+
+      <!-- Sheet drag handle (mobile only) -->
+      <div class="catch-sheet-handle" aria-hidden="true"></div>
 
       <!-- Header -->
       <div class="catch-header">
@@ -314,10 +305,16 @@
         </button>
       </div>
 
+      <!-- Mobile tab bar -->
+      <div class="catch-tabs" aria-label="Catch sections">
+        <button class="catch-tab-btn active" data-tab="roll">Roll</button>
+        <button class="catch-tab-btn" data-tab="group">Group &amp; Options</button>
+      </div>
+
       <div class="catch-body">
 
-        <!-- Left: Controls -->
-        <div class="catch-controls">
+        <!-- ── LEFT / TAB:GROUP — Controls ── -->
+        <div class="catch-controls catch-tab-pane" data-pane="group">
 
           <div class="catch-field">
             <label class="catch-label" for="catch-purpose">Purpose <span class="catch-optional">(optional)</span></label>
@@ -345,10 +342,20 @@
             <div id="catch-checklist" class="catch-checklist"></div>
           </div>
 
+          <!-- Mobile: Roll button also in group tab so user doesn't have to switch -->
+          <div class="catch-actions catch-actions--in-group">
+            <button id="catch-roll-btn-group" class="catch-roll-btn catch-open-btn" style="display:none">ROLL</button>
+          </div>
+
         </div>
 
-        <!-- Right: Output -->
-        <div class="catch-output">
+        <!-- ── RIGHT / TAB:ROLL — Output ── -->
+        <div class="catch-output catch-tab-pane active" data-pane="roll">
+
+          <!-- Mobile compact summary of current settings -->
+          <div class="catch-mobile-summary">
+            <span id="catch-pool-badge" class="catch-pool-badge">42 in pool</span>
+          </div>
 
           <div class="catch-drum-wrap">
             <div class="catch-drum-label">Rolling…</div>
@@ -358,7 +365,7 @@
           <div id="catch-result" class="catch-result"></div>
 
           <div class="catch-actions">
-            <button id="catch-roll-btn" class="catch-roll-btn">Roll</button>
+            <button id="catch-roll-btn" class="catch-roll-btn">ROLL</button>
             <button id="catch-reset-btn" class="catch-reset-btn" style="display:none">Reset</button>
           </div>
 
@@ -370,12 +377,11 @@
 
   </div><!-- /catch-overlay -->
 
-  <!-- ═══════════════════════════ SVG DEFS (hidden) ═══════════════════════════ -->
+  <!-- ═══════════════════════════ SVG DEFS ═══════════════════════════ -->
   <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
     <defs>
       <symbol id="gear-symbol" viewBox="0 0 200 200">
         <g fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round">
-          <!-- Gear teeth (12 teeth) -->
           <path d="M85 8 L88 0 L100 0 L112 0 L115 8 L108 15 L92 15 Z" />
           <path d="M138 22 L144 16 L153 25 L158 34 L152 40 L143 35 L137 28 Z" />
           <path d="M168 70 L176 68 L180 80 L180 92 L172 94 L166 86 L166 78 Z" />
@@ -385,14 +391,10 @@
           <path d="M32 130 L24 132 L28 144 L36 152 L42 148 L40 139 L34 134 Z" />
           <path d="M32 70 L24 68 L20 80 L20 92 L28 94 L34 86 L34 78 Z" />
           <path d="M62 22 L56 16 L47 25 L42 34 L48 40 L57 35 L63 28 Z" />
-          <!-- Main circle body -->
           <circle cx="100" cy="100" r="75" stroke-width="4"/>
-          <!-- Inner ring -->
           <circle cx="100" cy="100" r="55" stroke-width="2" stroke-dasharray="4 6"/>
-          <!-- Center hub -->
           <circle cx="100" cy="100" r="22" stroke-width="3"/>
           <circle cx="100" cy="100" r="10" stroke-width="2"/>
-          <!-- Spokes -->
           <line x1="100" y1="45" x2="100" y2="78" stroke-width="2"/>
           <line x1="100" y1="122" x2="100" y2="155" stroke-width="2"/>
           <line x1="45" y1="100" x2="78" y2="100" stroke-width="2"/>
@@ -401,14 +403,24 @@
           <line x1="120" y1="120" x2="142" y2="142" stroke-width="2"/>
           <line x1="142" y1="58" x2="120" y2="80" stroke-width="2"/>
           <line x1="80" y1="120" x2="58" y2="142" stroke-width="2"/>
-          <!-- Blueprint cross marks -->
           <path d="M96 100 L104 100 M100 96 L100 104" stroke-width="1.5" opacity="0.6"/>
         </g>
       </symbol>
     </defs>
   </svg>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
-  <script src="js/script.js" defer></script>
+  <!--
+    Three.js: load only on desktop. On mobile we skip entirely —
+    the canvas elements are hidden and CSS SVG gears take over.
+  -->
+  <script>
+    if (window.matchMedia('(min-width: 769px)').matches) {
+      var s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+      s.defer = true;
+      document.head.appendChild(s);
+    }
+  </script>
+  <script src="script.js" defer></script>
 </body>
 </html>

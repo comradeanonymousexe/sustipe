@@ -76,7 +76,8 @@ function initPreloader() {
   const nav      = qs('#main-nav');
 
   let count = 0;
-  const duration = 2400; // ms total
+  /* Faster on mobile — less patience for loading screens */
+  const duration = isMobile() ? 1600 : 2400;
   const steps    = 100;
   const interval = duration / steps;
 
@@ -90,11 +91,8 @@ function initPreloader() {
       setTimeout(() => {
         loader.classList.add('done');
         nav.classList.add('visible');
-        // Start hero reveals after preloader exits
         setTimeout(revealHeroItems, 400);
-        // Init scroll-based reveals
         setupScrollReveal();
-        // init parallax
         setupParallax();
       }, 400);
     }
@@ -102,7 +100,8 @@ function initPreloader() {
 }
 
 /* ═══════════════════════════════════════════════
-   02 · GEAR CANVAS (Three.js-powered 3D Gear)
+   02 · GEAR CANVAS (Three.js — desktop only)
+   On mobile: CSS SVG gears handle animation instead.
 ═══════════════════════════════════════════════ */
 function buildGear(scene, opts = {}) {
   const {
@@ -122,50 +121,28 @@ function buildGear(scene, opts = {}) {
     const a0 = i * arc - arc * 0.25;
     const a1 = i * arc + arc * 0.25;
     const a2 = i * arc + arc * 0.5;
-
     const getRad = (a, r) => [Math.cos(a) * r, Math.sin(a) * r];
-
-    if (i === 0) {
-      const [x, y] = getRad(a0, innerR);
-      shape.moveTo(x, y);
-    }
-
+    if (i === 0) { const [x, y] = getRad(a0, innerR); shape.moveTo(x, y); }
     const [x0, y0] = getRad(a0, innerR);
     const [x1, y1] = getRad(a0, outerR);
     const [x2, y2] = getRad(a1, outerR);
     const [x3, y3] = getRad(a1, innerR);
     const [x4, y4] = getRad(a2, innerR);
-
-    shape.lineTo(x0, y0);
-    shape.lineTo(x1, y1);
-    shape.lineTo(x2, y2);
-    shape.lineTo(x3, y3);
-    shape.lineTo(x4, y4);
+    shape.lineTo(x0, y0); shape.lineTo(x1, y1); shape.lineTo(x2, y2);
+    shape.lineTo(x3, y3); shape.lineTo(x4, y4);
   }
-
   shape.closePath();
 
-  // Hub hole
   const holePath = new THREE.Path();
-  const holeR    = 0.38;
-  holePath.absarc(0, 0, holeR, 0, Math.PI * 2, true);
+  holePath.absarc(0, 0, 0.38, 0, Math.PI * 2, true);
   shape.holes.push(holePath);
 
-  const extOpts = {
-    depth,
-    bevelEnabled: true,
-    bevelThickness: 0.05,
-    bevelSize: 0.04,
-    bevelSegments: 3
-  };
-
+  const extOpts = { depth, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.04, bevelSegments: 3 };
   const geo = new THREE.ExtrudeGeometry(shape, extOpts);
   geo.center();
 
   const mat = new THREE.MeshStandardMaterial({
-    color,
-    metalness: 0.85,
-    roughness: 0.25,
+    color, metalness: 0.85, roughness: 0.25,
     emissive: new THREE.Color(color).multiplyScalar(0.05)
   });
 
@@ -193,36 +170,24 @@ function initGearCanvas(canvasId, opts = {}) {
   const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 100);
   camera.position.set(0, 0, 6);
 
-  // Lighting
   const amb = new THREE.AmbientLight(0x4040a0, 0.4);
   scene.add(amb);
-
   const dl1 = new THREE.DirectionalLight(0xa78bfa, 2.5);
-  dl1.position.set(3, 4, 5);
-  scene.add(dl1);
-
+  dl1.position.set(3, 4, 5); scene.add(dl1);
   const dl2 = new THREE.DirectionalLight(0x6ee7f7, 1.2);
-  dl2.position.set(-4, -2, 2);
-  scene.add(dl2);
-
+  dl2.position.set(-4, -2, 2); scene.add(dl2);
   const pl = new THREE.PointLight(0x7c5ff0, 1.5, 15);
-  pl.position.set(0, 0, 3);
-  scene.add(pl);
+  pl.position.set(0, 0, 3); scene.add(pl);
 
   const gear = buildGear(scene, opts.gear || {});
   gear.rotation.z = 0.2;
 
-  let targetRotX = 0;
-  let targetRotY = 0;
-  let currentRotX = 0;
-  let currentRotY = 0;
-  let autoSpin = true;
-  let autoAngle = 0;
-  let raf;
+  let targetRotX = 0, targetRotY = 0;
+  let currentRotX = 0, currentRotY = 0;
+  let autoSpin = true, autoAngle = 0, raf;
 
   function animate() {
     raf = requestAnimationFrame(animate);
-
     if (autoSpin) {
       autoAngle += 0.003;
       gear.rotation.z = autoAngle;
@@ -233,11 +198,9 @@ function initGearCanvas(canvasId, opts = {}) {
       gear.rotation.x = currentRotX;
       gear.rotation.y = currentRotY;
     }
-
     pl.intensity = 1.5 + Math.sin(Date.now() * 0.002) * 0.3;
     renderer.render(scene, camera);
   }
-
   animate();
 
   return {
@@ -247,13 +210,8 @@ function initGearCanvas(canvasId, opts = {}) {
       targetRotY = (mx - 0.5) * 0.8;
       targetRotX = -(my - 0.5) * 0.6;
     },
-    resetToAuto() {
-      autoSpin = true;
-    },
-    destroy() {
-      cancelAnimationFrame(raf);
-      renderer.dispose();
-    }
+    resetToAuto() { autoSpin = true; },
+    destroy() { cancelAnimationFrame(raf); renderer.dispose(); }
   };
 }
 
@@ -261,19 +219,17 @@ function initGearCanvas(canvasId, opts = {}) {
    03 · CURSOR (desktop only)
 ═══════════════════════════════════════════════ */
 function initCursor() {
-  if (isMobile() || isTouch()) return; // ← skip on mobile
+  if (isMobile() || isTouch()) return;
 
   const dot  = qs('#cursor-dot');
   const ring = qs('#cursor-ring');
   if (!dot || !ring) return;
 
-  let mx = 0, my = 0;
-  let rx = 0, ry = 0;
+  let mx = 0, my = 0, rx = 0, ry = 0;
 
   document.addEventListener('mousemove', e => {
-    mx = e.clientX;
-    my = e.clientY;
-    dot.style.transform  = `translate(calc(-50% + ${mx}px), calc(-50% + ${my}px))`;
+    mx = e.clientX; my = e.clientY;
+    dot.style.transform = `translate(calc(-50% + ${mx}px), calc(-50% + ${my}px))`;
   });
 
   function animateCursor() {
@@ -284,17 +240,14 @@ function initCursor() {
   }
   animateCursor();
 
-  // Hover detection
   const hoverables = 'a, button, .name-card, .cta-btn, .nav-link';
   document.addEventListener('mouseover', e => {
-    if (e.target.matches(hoverables) || e.target.closest(hoverables)) {
+    if (e.target.matches(hoverables) || e.target.closest(hoverables))
       document.body.classList.add('cursor-hover');
-    }
   });
   document.addEventListener('mouseout', e => {
-    if (e.target.matches(hoverables) || e.target.closest(hoverables)) {
+    if (e.target.matches(hoverables) || e.target.closest(hoverables))
       document.body.classList.remove('cursor-hover');
-    }
   });
 }
 
@@ -336,7 +289,6 @@ function setupScrollReveal() {
 
   qsa('.reveal-item:not(#hero .reveal-item)').forEach(el => observer.observe(el));
 
-  // Staggered name cards
   const cardObserver = new IntersectionObserver(
     entries => {
       entries.forEach(entry => {
@@ -361,7 +313,7 @@ function setupScrollReveal() {
    07 · PARALLAX (desktop only)
 ═══════════════════════════════════════════════ */
 function setupParallax() {
-  if (isMobile()) return; // ← skip on mobile
+  if (isMobile()) return;
 
   const heroGear = qs('#hero-gear-bg');
   const mGear    = qs('#mgear');
@@ -371,13 +323,10 @@ function setupParallax() {
     if (!ticking) {
       requestAnimationFrame(() => {
         const sy = window.scrollY;
-        if (heroGear) {
-          heroGear.style.transform = `translateY(${sy * 0.3}px)`;
-        }
+        if (heroGear) heroGear.style.transform = `translateY(${sy * 0.3}px)`;
         if (mGear) {
           const rect = mGear.getBoundingClientRect();
-          const off  = rect.top * 0.15;
-          mGear.style.transform = `translateY(-50%) translateY(${-off}px)`;
+          mGear.style.transform = `translateY(-50%) translateY(${-(rect.top * 0.15)}px)`;
         }
         ticking = false;
       });
@@ -390,21 +339,17 @@ function setupParallax() {
    08 · BANNER TILT (desktop only)
 ═══════════════════════════════════════════════ */
 function initBannerTilt() {
-  if (isMobile() || isTouch()) return; // ← skip on mobile
+  if (isMobile() || isTouch()) return;
 
   const frame = qs('#banner-frame');
   const inner = qs('#tilt-target');
   if (!frame || !inner) return;
 
   frame.addEventListener('mousemove', e => {
-    const rect  = frame.getBoundingClientRect();
-    const cx    = rect.left + rect.width  / 2;
-    const cy    = rect.top  + rect.height / 2;
-    const dx    = (e.clientX - cx) / (rect.width  / 2);
-    const dy    = (e.clientY - cy) / (rect.height / 2);
-    const rotY  = clamp(dx * 8, -8, 8);
-    const rotX  = clamp(-dy * 5, -5, 5);
-    inner.style.transform = `perspective(1200px) rotateY(${rotY}deg) rotateX(${rotX}deg) scale3d(1.02,1.02,1.02)`;
+    const rect = frame.getBoundingClientRect();
+    const dx   = (e.clientX - (rect.left + rect.width  / 2)) / (rect.width  / 2);
+    const dy   = (e.clientY - (rect.top  + rect.height / 2)) / (rect.height / 2);
+    inner.style.transform = `perspective(1200px) rotateY(${clamp(dx*8,-8,8)}deg) rotateX(${clamp(-dy*5,-5,5)}deg) scale3d(1.02,1.02,1.02)`;
   });
 
   frame.addEventListener('mouseleave', () => {
@@ -421,11 +366,11 @@ function buildRoster() {
   const grid = qs('#roster-grid');
   if (!grid) return;
 
+  const frag = document.createDocumentFragment();
   MEMBERS_LIST.forEach(({ roll, name }) => {
     const card = document.createElement('div');
     card.className = 'name-card';
     card.dataset.roll = roll;
-    card.dataset.name = name;
 
     const idx  = document.createElement('span');
     idx.className = 'name-index';
@@ -441,65 +386,54 @@ function buildRoster() {
     card.appendChild(idx);
     card.appendChild(txt);
     card.appendChild(glow);
-    grid.appendChild(card);
-
-    card.addEventListener('click', () => {
-      card.style.setProperty('--glow-size', '3');
-      setTimeout(() => card.style.removeProperty('--glow-size'), 600);
-    });
+    frag.appendChild(card);
   });
+  grid.appendChild(frag);
 }
 
 /* ═══════════════════════════════════════════════
-   10 · HERO GEAR (mouse-reactive, desktop only)
+   10 · HERO GEAR
+   Desktop: Three.js 3D gear (mouse-reactive)
+   Mobile:  CSS SVG gear — zero JS cost
 ═══════════════════════════════════════════════ */
 function initHeroGear() {
+  if (isMobile()) return; // CSS gear handles mobile
   if (typeof THREE === 'undefined') return;
 
   const g = initGearCanvas('gear-canvas', {
-    gear: {
-      toothCount: isMobile() ? 18 : 24, // fewer segments on mobile
-      outerR: 1.9,
-      innerR: 1.3,
-      toothH: 0.3,
-      depth: 0.5,
-      color: 0x6a50d0
-    }
+    gear: { toothCount: 24, outerR: 1.9, innerR: 1.3, toothH: 0.3, depth: 0.5, color: 0x6a50d0 }
   });
   if (!g) return;
 
-  if (isMobile() || isTouch()) return; // no mouse tracking on touch
+  if (isTouch()) return;
 
   const section = qs('#hero');
   section.addEventListener('mousemove', e => {
     const rect = section.getBoundingClientRect();
-    const nx   = (e.clientX - rect.left) / rect.width;
-    const ny   = (e.clientY - rect.top)  / rect.height;
-    g.setMouseInfluence(nx, ny);
+    g.setMouseInfluence(
+      (e.clientX - rect.left) / rect.width,
+      (e.clientY - rect.top)  / rect.height
+    );
   });
-
   section.addEventListener('mouseleave', () => g.resetToAuto());
 }
 
 /* ═══════════════════════════════════════════════
    11 · CODA GEAR
+   Desktop: Three.js. Mobile: CSS SVG.
 ═══════════════════════════════════════════════ */
 function initCodaGear() {
+  if (isMobile()) return; // CSS gear handles mobile
   if (typeof THREE === 'undefined') return;
   initGearCanvas('coda-gear-canvas', {
-    gear: {
-      toothCount: 32,
-      outerR: 1.7,
-      innerR: 1.2,
-      depth: 0.3,
-      color: 0x4040a0
-    }
+    gear: { toothCount: 32, outerR: 1.7, innerR: 1.2, depth: 0.3, color: 0x4040a0 }
   });
 }
 
 /* ═══════════════════════════════════════════════
    12 · UTILS — CATCH
-   Random name roller with purpose + count + group
+   Desktop: classic side-panel overlay
+   Mobile:  bottom-sheet with Roll as hero action
 ═══════════════════════════════════════════════ */
 function initCatch() {
   const overlay   = qs('#catch-overlay');
@@ -510,24 +444,24 @@ function initCatch() {
   const checkList = qs('#catch-checklist');
   const selAll    = qs('#catch-sel-all');
   const selNone   = qs('#catch-sel-none');
-  const countInput= qs('#catch-count');
+  const countInput   = qs('#catch-count');
   const purposeInput = qs('#catch-purpose');
-  const resultArea = qs('#catch-result');
+  const resultArea   = qs('#catch-result');
   const drumEl    = qs('#catch-drum');
+  const tabBtns   = qsa('.catch-tab-btn');
+  const tabPanes  = qsa('.catch-tab-pane');
 
   if (!overlay) return;
 
   /* ── Build checklist ── */
+  const frag = document.createDocumentFragment();
   MEMBERS_LIST.forEach(({ roll, name }) => {
     const label = document.createElement('label');
     label.className = 'catch-check-label';
 
     const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.value = roll;
-    cb.checked = true;
-    cb.className = 'catch-checkbox';
-    cb.dataset.name = name;
+    cb.type = 'checkbox'; cb.value = roll; cb.checked = true;
+    cb.className = 'catch-checkbox'; cb.dataset.name = name;
 
     const span = document.createElement('span');
     span.className = 'catch-check-text';
@@ -544,7 +478,17 @@ function initCatch() {
     span.appendChild(nameSpan);
     label.appendChild(cb);
     label.appendChild(span);
-    checkList.appendChild(label);
+    frag.appendChild(label);
+  });
+  checkList.appendChild(frag);
+
+  /* ── Tab switching (mobile) ── */
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+      tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === target));
+      tabPanes.forEach(p => p.classList.toggle('active', p.dataset.pane === target));
+    });
   });
 
   /* ── Open / close ── */
@@ -553,6 +497,11 @@ function initCatch() {
       overlay.classList.add('active');
       document.body.style.overflow = 'hidden';
       resetCatch();
+      // On mobile, default to roll tab (output pane visible first)
+      if (isMobile()) {
+        tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === 'roll'));
+        tabPanes.forEach(p => p.classList.toggle('active', p.dataset.pane === 'roll'));
+      }
     });
   });
 
@@ -562,12 +511,35 @@ function initCatch() {
   }
 
   closeBtn.addEventListener('click', closeOverlay);
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) closeOverlay();
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeOverlay();
-  });
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeOverlay(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeOverlay(); });
+
+  /* ── Drag-to-dismiss on mobile (sheet handle) ── */
+  const handle = qs('.catch-sheet-handle');
+  if (handle) {
+    let startY = 0, isDragging = false;
+    handle.addEventListener('touchstart', e => {
+      startY = e.touches[0].clientY;
+      isDragging = true;
+    }, { passive: true });
+    handle.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      const dy = e.touches[0].clientY - startY;
+      if (dy > 0) {
+        const panel = qs('.catch-panel');
+        panel.style.transform = `translateY(${Math.min(dy, 200)}px)`;
+      }
+    }, { passive: true });
+    handle.addEventListener('touchend', e => {
+      isDragging = false;
+      const dy = e.changedTouches[0].clientY - startY;
+      const panel = qs('.catch-panel');
+      if (dy > 80) {
+        closeOverlay();
+      }
+      panel.style.transform = '';
+    });
+  }
 
   /* ── Select all / none ── */
   selAll.addEventListener('click', () => {
@@ -582,49 +554,14 @@ function initCatch() {
 
   function updateSelectedCount() {
     const n = checkList.querySelectorAll('.catch-checkbox:checked').length;
-    qs('#catch-sel-count').textContent = n + ' selected';
+    qsa('#catch-sel-count').forEach(el => el.textContent = n + ' selected');
+    /* Also update the compact badge in roll tab on mobile */
+    const badge = qs('#catch-pool-badge');
+    if (badge) badge.textContent = n + ' in pool';
   }
   updateSelectedCount();
 
-  /* ── Reset UI ── */
-  function resetCatch() {
-    resultArea.classList.remove('show');
-    resultArea.innerHTML = '';
-    drumEl.textContent   = '';
-    drumEl.classList.remove('show');
-    rollBtn.disabled = false;
-    rollBtn.textContent = 'Roll';
-    resetBtn.style.display = 'none';
-  }
-
-  resetBtn.addEventListener('click', resetCatch);
-
-  /* ── Drum roll animation ── */
-  function drumRoll(pool, finalPicks, duration, onDone) {
-    const allNames   = pool.map(p => p.name);
-    const frameMs    = 60;
-    const frames     = Math.floor(duration / frameMs);
-    let   frame      = 0;
-    drumEl.classList.add('show');
-
-    const iv = setInterval(() => {
-      frame++;
-      // Pick random display names during roll
-      const showing = [];
-      for (let i = 0; i < finalPicks.length; i++) {
-        showing.push(allNames[Math.floor(Math.random() * allNames.length)]);
-      }
-      drumEl.textContent = showing.join('   ·   ');
-
-      if (frame >= frames) {
-        clearInterval(iv);
-        drumEl.textContent = finalPicks.map(p => p.name).join('   ·   ');
-        onDone();
-      }
-    }, frameMs);
-  }
-
-  /* ── Count +/- buttons ── */
+  /* ── Count +/- ── */
   qs('#count-inc').addEventListener('click', () => {
     const max = checkList.querySelectorAll('.catch-checkbox:checked').length;
     const cur = parseInt(countInput.value) || 1;
@@ -635,23 +572,47 @@ function initCatch() {
     if (cur > 1) countInput.value = cur - 1;
   });
 
+  /* ── Reset UI ── */
+  function resetCatch() {
+    resultArea.classList.remove('show');
+    resultArea.innerHTML = '';
+    drumEl.textContent   = '';
+    drumEl.classList.remove('show');
+    rollBtn.disabled = false;
+    rollBtn.textContent = 'ROLL';
+    resetBtn.style.display = 'none';
+  }
+  resetBtn.addEventListener('click', resetCatch);
+
+  /* ── Drum roll ── */
+  function drumRoll(pool, finalPicks, duration, onDone) {
+    const allNames = pool.map(p => p.name);
+    const frameMs  = 60;
+    const frames   = Math.floor(duration / frameMs);
+    let frame = 0;
+    drumEl.classList.add('show');
+
+    const iv = setInterval(() => {
+      frame++;
+      const showing = finalPicks.map(() => allNames[Math.floor(Math.random() * allNames.length)]);
+      drumEl.textContent = showing.join('  ·  ');
+      if (frame >= frames) {
+        clearInterval(iv);
+        drumEl.textContent = finalPicks.map(p => p.name).join('  ·  ');
+        onDone();
+      }
+    }, frameMs);
+  }
+
   /* ── Roll logic ── */
   rollBtn.addEventListener('click', () => {
     const checked = [...checkList.querySelectorAll('.catch-checkbox:checked')];
-    if (!checked.length) {
-      shakeEl(rollBtn);
-      return;
-    }
+    if (!checked.length) { shakeEl(rollBtn); return; }
 
     const count = Math.max(1, Math.min(parseInt(countInput.value) || 1, checked.length));
-    const pool  = checked.map(cb => ({
-      roll: Number(cb.value),
-      name: cb.dataset.name
-    }));
-
+    const pool  = checked.map(cb => ({ roll: Number(cb.value), name: cb.dataset.name }));
     const purpose = purposeInput.value.trim();
 
-    // Fisher-Yates shuffle → take first `count`
     const shuffled = [...pool];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -663,6 +624,12 @@ function initCatch() {
     resultArea.classList.remove('show');
     resultArea.innerHTML = '';
 
+    /* On mobile: auto-switch to roll tab so result is visible */
+    if (isMobile()) {
+      tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === 'roll'));
+      tabPanes.forEach(p => p.classList.toggle('active', p.dataset.pane === 'roll'));
+    }
+
     drumRoll(pool, picks, 2200, () => {
       setTimeout(() => {
         drumEl.classList.remove('show');
@@ -671,11 +638,10 @@ function initCatch() {
     });
   });
 
-  /* ── Render final result ── */
+  /* ── Render result ── */
   function renderResult(picks, purpose) {
     resultArea.innerHTML = '';
 
-    /* Cards for each caught person */
     const cardsWrap = document.createElement('div');
     cardsWrap.className = 'catch-result-cards';
 
@@ -697,11 +663,10 @@ function initCatch() {
       cardsWrap.appendChild(card);
     });
 
-    /* Verdict line */
     const verdict = document.createElement('p');
     verdict.className = 'catch-verdict';
-    const nameList = picks.map(p => p.name).join(', ');
-    const haveText = picks.length === 1 ? 'has' : 'have';
+    const nameList  = picks.map(p => p.name).join(', ');
+    const haveText  = picks.length === 1 ? 'has' : 'have';
     verdict.innerHTML = purpose
       ? `<em>${nameList}</em> ${haveText} been caught for <span class="catch-purpose-highlight">${purpose}</span>.`
       : `<em>${nameList}</em> ${haveText} been caught.`;
@@ -712,10 +677,9 @@ function initCatch() {
 
     resetBtn.style.display = 'inline-flex';
     rollBtn.disabled = false;
-    rollBtn.textContent = 'Roll Again';
+    rollBtn.textContent = 'ROLL AGAIN';
   }
 
-  /* ── Shake utility ── */
   function shakeEl(el) {
     el.classList.add('shake');
     setTimeout(() => el.classList.remove('shake'), 400);
@@ -738,7 +702,6 @@ function initMobileNav() {
     hamburger.setAttribute('aria-expanded', 'true');
     drawer.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    // Animate hamburger → X
     const spans = hamburger.querySelectorAll('span');
     spans[0].style.transform = 'translateY(6px) rotate(45deg)';
     spans[1].style.opacity   = '0';
@@ -751,7 +714,6 @@ function initMobileNav() {
     hamburger.setAttribute('aria-expanded', 'false');
     drawer.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    // Restore hamburger bars
     const spans = hamburger.querySelectorAll('span');
     spans[0].style.transform = '';
     spans[1].style.opacity   = '';
@@ -761,13 +723,7 @@ function initMobileNav() {
   hamburger.addEventListener('click', openDrawer);
   closeBtn.addEventListener('click', closeDrawer);
   backdrop.addEventListener('click', closeDrawer);
-
-  // Close on any drawer link click
-  drawer.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', closeDrawer);
-  });
-
-  // Close on Escape
+  drawer.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', closeDrawer));
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();
   });
@@ -785,5 +741,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initCodaGear();
   initCatch();
   initMobileNav();
-  initPreloader(); // runs last — controls timing
+  initPreloader();
 });
